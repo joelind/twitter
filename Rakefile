@@ -11,7 +11,7 @@ Jeweler::Tasks.new do |gem|
 
   gem.add_dependency("oauth", "~> 0.4.1")
   gem.add_dependency("hashie", "~> 0.2.0")
-  gem.add_dependency("httparty", "~> 0.5.0")
+  gem.add_dependency("httparty", ">= 0.6.1")
   gem.add_dependency("yajl-ruby", "~> 0.7.0")
 
   gem.add_development_dependency("shoulda", "~> 2.10.0")

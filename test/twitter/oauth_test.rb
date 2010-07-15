@@ -105,4 +105,23 @@ class OAuthTest < Test::Unit::TestCase
     access_token.expects(:post).returns(nil)
     twitter.post('/foo')
   end
+
+  [:get, :put, :post, :delete].each do |method|
+    should "#{method} with api version if provided" do
+      access_token = mock('access token')
+      twitter = Twitter::OAuth.new('token', 'secret', :api_version => 2)
+      twitter.stubs(:access_token).returns(access_token)
+      access_token.expects(method).with('/2/foo').returns(nil)
+      access_token.expects(method).with('/foo').never
+      twitter.send(method, '/foo')
+    end
+
+    should "not #{method} with api versioning if api_version is false" do
+      access_token = mock('access token')
+      twitter = Twitter::OAuth.new('token', 'secret', :api_version => false)
+      twitter.stubs(:access_token).returns(access_token)
+      access_token.expects(method).with('/foo')
+      twitter.send(method, '/foo')
+    end
+  end
 end

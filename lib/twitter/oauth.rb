@@ -1,10 +1,24 @@
 module Twitter
   class OAuth
-    extend Forwardable
 
-    def_delegators :access_token, :get, :post, :put, :delete
+    def delete(path, headers=nil)
+      access_token.delete(*[api_version + path, headers].compact)
+    end
 
-    attr_reader :ctoken, :csecret, :consumer_options, :api_endpoint, :signing_endpoint
+    def get(path, headers=nil)
+      access_token.get(*[api_version + path, headers].compact)
+    end
+
+    def post(path, data = nil, headers=nil)
+      access_token.post(*[api_version + path, data, headers].compact)
+    end
+
+    def put(path, data = nil, headers=nil)
+      access_token.put(*[api_version + path, data, headers].compact)
+    end
+
+
+    attr_reader :ctoken, :csecret, :consumer_options, :api_endpoint, :api_version, :signing_endpoint
 
     # Options
     #   :sign_in => true to just sign in with twitter instead of doing oauth authorization
@@ -13,6 +27,13 @@ module Twitter
       @ctoken, @csecret, @consumer_options = ctoken, csecret, {}
       @api_endpoint = options[:api_endpoint] || 'http://api.twitter.com'
       @signing_endpoint = options[:signing_endpoint] || 'http://api.twitter.com'
+
+      if options[:api_version]
+        @api_version = "/#{options[:api_version].to_s}"
+      else
+        @api_version = ''
+      end
+
       if options[:sign_in]
         @consumer_options[:authorize_path] =  '/oauth/authenticate'
       end

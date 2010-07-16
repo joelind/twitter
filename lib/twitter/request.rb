@@ -1,6 +1,7 @@
 module Twitter
   class Request
     extend Forwardable
+    API_VERSION = '1'
 
     def self.get(client, path, options={})
       new(client, :get, path, options).perform
@@ -28,7 +29,7 @@ module Twitter
 
     def uri
       @uri ||= begin
-        uri = URI.parse(path)
+        uri = URI.parse("/#{API_VERSION}#{path}")
 
         if options[:query] && options[:query] != {}
           uri.query = to_query(options[:query])
